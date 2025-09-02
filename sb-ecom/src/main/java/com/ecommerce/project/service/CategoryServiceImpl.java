@@ -1,5 +1,6 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exception.ApiException;
 import com.ecommerce.project.exception.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repositories.CategoryRepository;
@@ -28,6 +29,10 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public void createCategory(Category category) {
+        Category savedCategory=categoryRepository.findByCategoryName(category.getCategoryName());
+        if(savedCategory!=null){
+            throw new ApiException("Category with the name "+category.getCategoryName()+" is already exist!!!");
+        }
         category.setCategoryId(null);
         categoryRepository.save(category);
     }
