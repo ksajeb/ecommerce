@@ -1,5 +1,7 @@
 package com.ecommerce.project.controller;
 
+import com.ecommerce.project.dto.CategoryRequestDto;
+import com.ecommerce.project.dto.CategoryResponseDto;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.service.CategoryService;
 import jakarta.validation.Valid;
@@ -21,16 +23,16 @@ public class CategoryController {
 
 
     @GetMapping("/public/categories")
-    public ResponseEntity<List<Category>> getCategories(){
-        List<Category> categories = categoryService.getAllCategory();
-        return new ResponseEntity<>(categories,HttpStatus.OK);
+    public ResponseEntity<CategoryResponseDto> getCategories(){
+        CategoryResponseDto categoryResponseDto = categoryService.getAllCategory();
+        return new ResponseEntity<>(categoryResponseDto,HttpStatus.OK);
         
     }
 
     @PostMapping("/public/categories")
-    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category){
-        categoryService.createCategory(category);
-        return new ResponseEntity<>("Category added successfully",HttpStatus.CREATED);
+    public ResponseEntity<CategoryRequestDto> createCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto){
+        CategoryRequestDto savedCategoryRequestDto1=categoryService.createCategory(categoryRequestDto);
+        return new ResponseEntity<>(savedCategoryRequestDto1,HttpStatus.CREATED);
     }
 
     @DeleteMapping("/admin/categories/{categoryId}")

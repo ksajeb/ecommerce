@@ -1,10 +1,12 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.dto.CategoryRequestDto;
 import com.ecommerce.project.dto.CategoryResponseDto;
 import com.ecommerce.project.exception.ApiException;
 import com.ecommerce.project.exception.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repositories.CategoryRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +19,34 @@ public class CategoryServiceImpl implements CategoryService{
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public CategoryResponseDto getAllCategory() {
         List<Category> categories=categoryRepository.findAll();
         if(categories.isEmpty()){
             throw new ApiException("No category created till now.");
         }
-        return categories;
+        List<CategoryRequestDto> categoryRequestDtos=categories.stream()
+                .map(category -> modelMapper.map(category,CategoryRequestDto.class))
+                .toList();
+
+        CategoryResponseDto categoryResponseDto=new CategoryResponseDto();
+        categoryResponseDto.setContent(categoryRequestDtos);
+        return categoryResponseDto;
     }
 
     @Override
-    public void createCategory(Category category) {
-        Category savedCategory=categoryRepository.findByCategoryName(category.getCategoryName());
-        if(savedCategory!=null){
+    public CategoryRequestDto createCategory(CategoryRequestDto categoryRequestDto) {
+        Category category=modelMapper.map(categoryRequestDto,Category.class);
+        Category categoryFromDb =categoryRepository.findByCategoryName(category.getCategoryName());
+        if(categoryFromDb !=null){
             throw new ApiException("Category with the name "+category.getCategoryName()+" is already exist!!!");
         }
         category.setCategoryId(null);
-        categoryRepository.save(category);
+        Category savedCategory=categoryRepository.save(category);
+        return modelMapper.map(savedCategory,CategoryRequestDto.class);
     }
 
     @Override
