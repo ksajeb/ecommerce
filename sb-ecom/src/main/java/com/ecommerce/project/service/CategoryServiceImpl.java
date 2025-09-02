@@ -1,5 +1,6 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.dto.CategoryResponseDto;
 import com.ecommerce.project.exception.ApiException;
 import com.ecommerce.project.exception.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
@@ -17,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService{
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<Category> getAllCategory() {
+    public CategoryResponseDto getAllCategory() {
         List<Category> categories=categoryRepository.findAll();
         if(categories.isEmpty()){
             throw new ApiException("No category created till now.");
