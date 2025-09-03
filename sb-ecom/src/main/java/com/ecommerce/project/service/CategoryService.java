@@ -5,7 +5,7 @@ import com.ecommerce.project.dto.CategoryResponseDto;
 
 
 public interface CategoryService {
-    CategoryResponseDto getAllCategory();
+    CategoryResponseDto getAllCategory(Integer pageNumber,Integer pageSize);
 
     CategoryRequestDto createCategory(CategoryRequestDto categoryRequestDto);
 

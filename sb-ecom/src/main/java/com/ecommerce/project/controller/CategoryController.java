@@ -14,20 +14,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class CategoryController {
 
-    @GetMapping("/echo")
-    public ResponseEntity<String> echoMessage(@RequestParam(name="message" ,defaultValue = "Hello users!")  String message){
-        return new ResponseEntity<>("Echoed message: " +message,HttpStatus.OK);
-    }
-
     @Autowired
     private  CategoryService categoryService;
 
 
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponseDto> getCategories(){
-        CategoryResponseDto categoryResponseDto = categoryService.getAllCategory();
+    public ResponseEntity<CategoryResponseDto> getCategories(
+            @RequestParam(name="pageNumber") Integer pageNumber,
+            @RequestParam(name="pageSize") Integer pageSize){
+        CategoryResponseDto categoryResponseDto = categoryService.getAllCategory(pageNumber,pageSize);
         return new ResponseEntity<>(categoryResponseDto,HttpStatus.OK);
-        
     }
 
     @PostMapping("/public/categories")

@@ -8,6 +8,9 @@ import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repositories.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,15 +26,16 @@ public class CategoryServiceImpl implements CategoryService{
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryResponseDto getAllCategory() {
-        List<Category> categories=categoryRepository.findAll();
+    public CategoryResponseDto getAllCategory(Integer pageNumber,Integer pageSize) {
+        Pageable pageDetail= PageRequest.of(pageNumber,pageSize);
+        Page<Category> categoryPage=categoryRepository.findAll(pageDetail);
+        List<Category> categories=categoryPage.getContent() ;
         if(categories.isEmpty()){
             throw new ApiException("No category created till now.");
         }
         List<CategoryRequestDto> categoryRequestDtos=categories.stream()
                 .map(category -> modelMapper.map(category,CategoryRequestDto.class))
                 .toList();
-
         CategoryResponseDto categoryResponseDto=new CategoryResponseDto();
         categoryResponseDto.setContent(categoryRequestDtos);
         return categoryResponseDto;
