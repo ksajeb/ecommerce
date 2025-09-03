@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -31,8 +28,8 @@ public class CategoryController {
 
     @PostMapping("/public/categories")
     public ResponseEntity<CategoryRequestDto> createCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto){
-        CategoryRequestDto savedCategoryRequestDto1=categoryService.createCategory(categoryRequestDto);
-        return new ResponseEntity<>(savedCategoryRequestDto1,HttpStatus.CREATED);
+        CategoryRequestDto savedCategoryRequestDto=categoryService.createCategory(categoryRequestDto);
+        return new ResponseEntity<>(savedCategoryRequestDto,HttpStatus.CREATED);
     }
 
     @DeleteMapping("/admin/categories/{categoryId}")
@@ -42,8 +39,8 @@ public class CategoryController {
     }
 
     @PutMapping("/public/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category,@PathVariable Long categoryId){
-        Category savedCategory=categoryService.updateCategory(category,categoryId);
-        return new ResponseEntity<>("Updated Category with categoryId: "+categoryId,HttpStatus.OK);
+    public ResponseEntity<CategoryRequestDto> updateCategory(@Valid @RequestBody CategoryRequestDto categoryRequestDto,@PathVariable Long categoryId){
+        CategoryRequestDto savedCategoryDTO=categoryService.updateCategory(categoryRequestDto,categoryId);
+        return new ResponseEntity<>(savedCategoryDTO,HttpStatus.OK);
     }
 }
