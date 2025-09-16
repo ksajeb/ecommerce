@@ -11,4 +11,6 @@ public interface ProductService {
     ProductResponseDto getAllProduct();
 
     ProductResponseDto searchByCategory(Long categoryId);
+
+    ProductResponseDto searchProductByKeyword(String keyword);
 }
