@@ -2,7 +2,6 @@ package com.ecommerce.project.controller;
 
 import com.ecommerce.project.dto.ProductDto;
 import com.ecommerce.project.dto.ProductResponseDto;
-import com.ecommerce.project.model.Product;
 import com.ecommerce.project.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +16,9 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("/admin/categories/{categoryId}/product")
-    public ResponseEntity<ProductDto> addProduct(@RequestBody Product product, @PathVariable Long categoryId){
-        ProductDto productDto=productService.addProduct(categoryId,product);
-        return new ResponseEntity<>(productDto, HttpStatus.CREATED);
+    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto, @PathVariable Long categoryId){
+        ProductDto savedProductDto =productService.addProduct(categoryId, productDto);
+        return new ResponseEntity<>(savedProductDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/public/products")
@@ -41,8 +40,8 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products/{productId}")
-    public ResponseEntity<ProductDto> updateProduct(@RequestBody Product product,@PathVariable Long productId){
-        ProductDto updatedProductDto=productService.updateProduct(productId,product);
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDTO,@PathVariable Long productId){
+        ProductDto updatedProductDto=productService.updateProduct(productId,productDTO);
         return new ResponseEntity<>(updatedProductDto,HttpStatus.OK);
     }
 
