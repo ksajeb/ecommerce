@@ -33,7 +33,7 @@ public class User {
     private String email;
 
     @NotBlank
-    @Size(max = 40)
+    @Size(min = 3, max = 80)
     private String password;
 
     public User(String username, String email, String password) {
