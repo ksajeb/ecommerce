@@ -6,6 +6,7 @@ import com.ecommerce.project.exception.ApiException;
 import com.ecommerce.project.exception.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
+import com.ecommerce.project.repositories.CartRepository;
 import com.ecommerce.project.repositories.CategoryRepository;
 import com.ecommerce.project.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
@@ -34,6 +35,9 @@ public class ProductServiceImpl implements  ProductService{
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    CartRepository cartRepository;
 
     @Value("${project.image}")
     private String path;
