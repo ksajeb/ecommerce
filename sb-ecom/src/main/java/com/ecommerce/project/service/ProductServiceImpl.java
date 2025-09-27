@@ -1,9 +1,11 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.dto.CartDTO;
 import com.ecommerce.project.dto.ProductDto;
 import com.ecommerce.project.dto.ProductResponseDto;
 import com.ecommerce.project.exception.ApiException;
 import com.ecommerce.project.exception.ResourceNotFoundException;
+import com.ecommerce.project.model.Cart;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
 import com.ecommerce.project.repositories.CartRepository;
@@ -37,7 +39,10 @@ public class ProductServiceImpl implements  ProductService{
     private FileService fileService;
 
     @Autowired
-    CartRepository cartRepository;
+    private CartRepository cartRepository;
+
+    @Autowired
+    private CartService cartService;
 
     @Value("${project.image}")
     private String path;
@@ -171,6 +176,16 @@ public class ProductServiceImpl implements  ProductService{
 
         Product savedProduct=productRepository.save(productFromDb);
 
+        List<Cart>  carts=cartRepository.findCartsByProductId(productId);
+        List<CartDTO> cartDTOS=carts.stream().map(cart ->{
+            CartDTO cartDTO=modelMapper.map(cart,CartDTO.class);
+            List<ProductDto> products=cart.getCartItems().stream()
+                    .map(p->modelMapper.map(p.getProduct(),ProductDto.class))
+                    .toList();
+            cartDTO.setProducts(products);
+            return cartDTO;
+        }).toList();
+        cartDTOS.forEach(cart->cartService.updateProductInCart(cart.getCartId(),productId));
         return modelMapper.map(savedProduct,ProductDto.class);
     }
 
@@ -178,6 +193,8 @@ public class ProductServiceImpl implements  ProductService{
     public ProductDto deleteProduct(Long productId) {
         Product product=productRepository.findById(productId)
                 .orElseThrow(()-> new ResourceNotFoundException("Product","productId",productId));
+        List<Cart>  carts=cartRepository.findCartsByProductId(productId);
+        carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(),productId));
         productRepository.delete(product);
         return modelMapper.map(product,ProductDto.class);
     }
