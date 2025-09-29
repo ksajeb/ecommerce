@@ -34,7 +34,7 @@ public class Order {
     private Payment payment;
 
     private Double totalAmount;
-    private String status;
+    private String orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "address_id")
